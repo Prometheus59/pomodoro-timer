@@ -24,6 +24,52 @@
   color: white;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+form .inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+form .buttons {
+  margin: 2em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  margin: 1em;
+  padding: 15px 32px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  border: none;
+}
+
+#start {
+  background-color: #4caf50;
+  color: white;
+}
+
+#stop {
+  background-color: #f44336;
+  color: white;
+}
+
+#reset {
+  background-color: #2196f3;
+  color: white;
+}
+
 .App-link {
   color: #61dafb;
 }
