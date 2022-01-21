@@ -14,9 +14,9 @@ export default class Timer extends React.Component<any, any> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      timeRemainingInSeconds: 0,
-      breakMinutes: 0,
-      timerMinutes: 25,
+      timeRemainingInSeconds: null,
+      breakMinutes: null,
+      timerMinutes: null,
       hasStarted: false,
     };
 
@@ -30,7 +30,10 @@ export default class Timer extends React.Component<any, any> {
     event.preventDefault();
     if (!this.state.hasStarted) {
       this.setState({
-        timeRemainingInSeconds: this.state.timerMinutes * 60,
+        // Default to 25 minute pomodoros
+        timeRemainingInSeconds: this.state.timerMinutes
+          ? this.state.timerMinutes * 60
+          : 25 * 60,
       });
       this.timer = setInterval(() => {
         this.decrementTimeRemaining();
@@ -89,23 +92,53 @@ export default class Timer extends React.Component<any, any> {
       <div>
         <div>
           <form>
-            <input
-              id="focus-length"
-              type={`number`}
-              name="Focus Length"
-              value={this.state.timerMinutes}
-              onChange={this.handleChange}
-            />
-            <input
-              id="break-length"
-              type={"number"}
-              name="Break Length"
-              value={this.state.breakMinutes}
-              onChange={this.handleChange}
-            />
-            <button onClick={this.handleStart.bind(this)}>Start</button>
-            <button onClick={this.handleStop.bind(this)}>Stop</button>
-            <button onClick={this.handleReset.bind(this)}>Reset</button>
+            <div className="inputs">
+              <label htmlFor="focus-length">Focus Length</label>
+              <input
+                id="focus-length"
+                type={`number`}
+                name="Focus Length"
+                min={1}
+                max={60}
+                list="focus-length-list"
+                value={this.state.timerMinutes}
+                onChange={this.handleChange}
+              />
+              <datalist id="focus-length-list">
+                <option value="15" />
+                <option value="25" />
+                <option value="30" />
+                <option value="45" />
+              </datalist>
+              <label htmlFor="Break Length">Break Length</label>
+              <input
+                id="break-length"
+                type={"number"}
+                name="Break Length"
+                min={1}
+                max={30}
+                list="break-length-list"
+                value={this.state.breakMinutes}
+                onChange={this.handleChange}
+              />
+            </div>
+            <datalist id="break-length-list">
+              <option value="5" />
+              <option value="10" />
+              <option value="15" />
+              <option value="20" />
+            </datalist>
+            <div className="buttons">
+              <button id="start" onClick={this.handleStart.bind(this)}>
+                Start
+              </button>
+              <button id="stop" onClick={this.handleStop.bind(this)}>
+                Stop
+              </button>
+              <button id="reset" onClick={this.handleReset.bind(this)}>
+                Reset
+              </button>
+            </div>
           </form>
         </div>
         <div className="countdown-timer">
