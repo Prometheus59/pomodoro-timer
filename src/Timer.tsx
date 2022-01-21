@@ -87,6 +87,25 @@ export default class Timer extends React.Component<any, any> {
     }
   };
 
+  displayTime = () => {
+    let minutes = Math.floor(this.state.timeRemainingInSeconds / 60);
+    let seconds = this.state.timeRemainingInSeconds - minutes * 60;
+
+    let secondsString = null;
+    let minutesString = null;
+
+    if (seconds < 10) {
+      secondsString = "0" + seconds;
+    }
+    if (minutes < 10) {
+      minutesString = "0" + minutes;
+    }
+
+    return `${minutesString ? minutesString : minutes}:${
+      secondsString ? secondsString : seconds
+    }`;
+  };
+
   render() {
     return (
       <div>
@@ -141,9 +160,7 @@ export default class Timer extends React.Component<any, any> {
             </div>
           </form>
         </div>
-        <div className="countdown-timer">
-          {this.state.timeRemainingInSeconds}s
-        </div>
+        <div className="countdown-timer">{this.displayTime()}</div>
       </div>
     );
   }
