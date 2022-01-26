@@ -7,6 +7,7 @@ type Props = {
 // type State = {
 //   timeRemainingInSeconds: number;
 // };
+const toSeconds = 60;
 
 export default class Timer extends React.Component<any, any> {
   private timer: any;
@@ -14,8 +15,8 @@ export default class Timer extends React.Component<any, any> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      timeRemainingInSeconds: null,
-      timerMinutes: null,
+      timeRemainingInSeconds: 25 * toSeconds,
+      timerMinutes: 25,
       breakMinutes: null,
       hasStarted: false,
     };
@@ -31,9 +32,7 @@ export default class Timer extends React.Component<any, any> {
     if (!this.state.hasStarted) {
       this.setState({
         // Default to 25 minute pomodoros
-        timeRemainingInSeconds: this.state.timerMinutes
-          ? this.state.timerMinutes * 60
-          : 25 * 60,
+        timeRemainingInSeconds: this.state.timerMinutes * toSeconds
       });
       this.timer = setInterval(() => {
         this.decrementTimeRemaining();
@@ -58,7 +57,7 @@ export default class Timer extends React.Component<any, any> {
     event.preventDefault();
     clearInterval(this.timer);
     this.setState({
-      timeRemainingInSeconds: this.state.timerMinutes * 60,
+      timeRemainingInSeconds: this.state.timerMinutes * toSeconds,
       hasStarted: false,
     });
   }
@@ -68,8 +67,10 @@ export default class Timer extends React.Component<any, any> {
     this.setState({
       [event.target.name]: event.target.value,
     });
-    if (!this.state.isOn) {
-      this.displayTime();
+    if (!this.state.isOn && event.target.name === "timerMinutes") {
+      this.setState({
+        timeRemainingInSeconds: event.target.value * toSeconds
+      });
     }
   }
 
@@ -85,8 +86,8 @@ export default class Timer extends React.Component<any, any> {
   };
 
   displayTime = () => {
-    let minutes = Math.floor(this.state.timeRemainingInSeconds / 60);
-    let seconds = this.state.timeRemainingInSeconds - minutes * 60;
+    let minutes = Math.floor(this.state.timeRemainingInSeconds / toSeconds);
+    let seconds = this.state.timeRemainingInSeconds - minutes * toSeconds;
 
     let secondsString = null;
     let minutesString = null;
@@ -112,13 +113,13 @@ export default class Timer extends React.Component<any, any> {
               <label htmlFor="focus-length">Focus Length</label>
               <select value={this.state.timerMinutes} onChange={this.handleChange} id="focus-length" name="timerMinutes">
                 <option value="15">15</option>
-                <option value="25">25</option>
+                <option selected value="25">25</option>
                 <option value="30">30</option>
                 <option value="45">45</option>
               </select>
               <label htmlFor="break-length">Break Length</label>
               <select value={this.state.breakMinutes} onChange={this.handleChange} id="break-length" name="breakMinutes">
-                <option value="5">5</option>
+                <option selected value="5">5</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
                 <option value="20">20</option>
