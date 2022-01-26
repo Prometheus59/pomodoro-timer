@@ -4,9 +4,9 @@ type Props = {
   startTimeInSeconds: number;
 };
 
-type State = {
-  timeRemainingInSeconds: number;
-};
+// type State = {
+//   timeRemainingInSeconds: number;
+// };
 
 export default class Timer extends React.Component<any, any> {
   private timer: any;
@@ -15,8 +15,8 @@ export default class Timer extends React.Component<any, any> {
     super(props);
     this.state = {
       timeRemainingInSeconds: null,
-      breakMinutes: null,
       timerMinutes: null,
+      breakMinutes: null,
       hasStarted: false,
     };
 
@@ -63,17 +63,14 @@ export default class Timer extends React.Component<any, any> {
     });
   }
 
-  // Consider using event parameter for the input fields (see above)
-  handleChange() {
-    const element = document.getElementById("focus-length") as HTMLInputElement;
-    const element2 = document.getElementById(
-      "break-length"
-    ) as HTMLInputElement;
+  handleChange(event: any) {
+    event.preventDefault(); //? TODO: Is this necessary?
     this.setState({
-      // Don't allow for setting a timer with negative time
-      timerMinutes: parseInt(element.value) > 0 ? element.value : 0,
-      breakMinutes: parseInt(element2.value) > 0 ? element2.value : 0,
+      [event.target.name]: event.target.value,
     });
+    if (!this.state.isOn) {
+      this.displayTime();
+    }
   }
 
   decrementTimeRemaining = () => {
@@ -82,7 +79,7 @@ export default class Timer extends React.Component<any, any> {
         timeRemainingInSeconds: this.state.timeRemainingInSeconds - 1,
       });
     } else {
-      alert("Fucked up");
+      alert("Timer Completed");
       clearInterval(this.timer);
     }
   };
@@ -94,6 +91,7 @@ export default class Timer extends React.Component<any, any> {
     let secondsString = null;
     let minutesString = null;
 
+    // Append "0" to the front if it is less than 10
     if (seconds < 10) {
       secondsString = "0" + seconds;
     }
@@ -101,9 +99,8 @@ export default class Timer extends React.Component<any, any> {
       minutesString = "0" + minutes;
     }
 
-    return `${minutesString ? minutesString : minutes}:${
-      secondsString ? secondsString : seconds
-    }`;
+    return `${minutesString ? minutesString : minutes}:${secondsString ? secondsString : seconds
+      }`;
   };
 
   render() {
@@ -113,40 +110,20 @@ export default class Timer extends React.Component<any, any> {
           <form>
             <div className="inputs">
               <label htmlFor="focus-length">Focus Length</label>
-              <input
-                id="focus-length"
-                type={`number`}
-                name="Focus Length"
-                min={1}
-                max={60}
-                list="focus-length-list"
-                value={this.state.timerMinutes}
-                onChange={this.handleChange}
-              />
-              <datalist id="focus-length-list">
-                <option value="15" />
-                <option value="25" />
-                <option value="30" />
-                <option value="45" />
-              </datalist>
-              <label htmlFor="Break Length">Break Length</label>
-              <input
-                id="break-length"
-                type={"number"}
-                name="Break Length"
-                min={1}
-                max={30}
-                list="break-length-list"
-                value={this.state.breakMinutes}
-                onChange={this.handleChange}
-              />
+              <select value={this.state.timerMinutes} onChange={this.handleChange} id="focus-length" name="timerMinutes">
+                <option value="15">15</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+              <label htmlFor="break-length">Break Length</label>
+              <select value={this.state.breakMinutes} onChange={this.handleChange} id="break-length" name="breakMinutes">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+              </select>
             </div>
-            <datalist id="break-length-list">
-              <option value="5" />
-              <option value="10" />
-              <option value="15" />
-              <option value="20" />
-            </datalist>
             <div className="buttons">
               <button id="start" onClick={this.handleStart.bind(this)}>
                 Start
