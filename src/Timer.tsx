@@ -30,10 +30,10 @@ export default class Timer extends React.Component<any, any> {
   handleStart(event: any) {
     event.preventDefault();
     if (!this.state.hasStarted) {
-      this.setState({
-        // Default to 25 minute pomodoros
-        timeRemainingInSeconds: this.state.timerMinutes * toSeconds
-      });
+      // this.setState({
+      //   // Default to 25 minute pomodoros
+      //   timeRemainingInSeconds: this.state.timerMinutes * toSeconds
+      // });
       this.timer = setInterval(() => {
         this.decrementTimeRemaining();
       }, 1000);
@@ -67,8 +67,10 @@ export default class Timer extends React.Component<any, any> {
     this.setState({
       [event.target.name]: event.target.value,
     });
-    if (!this.state.isOn && event.target.name === "timerMinutes") {
+    if (!this.state.hasStarted && event.target.name === "timerMinutes") {
       this.setState({
+        [event.target.name]: event.target.value,
+        //TODO: Change this part to account for when break timer is running
         timeRemainingInSeconds: event.target.value * toSeconds
       });
     }
@@ -82,6 +84,7 @@ export default class Timer extends React.Component<any, any> {
     } else {
       alert("Timer Completed");
       clearInterval(this.timer);
+      //TODO: Switch to break timer
     }
   };
 
