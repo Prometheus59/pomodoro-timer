@@ -4,9 +4,6 @@ type Props = {
   startTimeInSeconds: number;
 };
 
-// type State = {
-//   timeRemainingInSeconds: number;
-// };
 const toSeconds = 60;
 
 export default class Timer extends React.Component<any, any> {
@@ -17,14 +14,16 @@ export default class Timer extends React.Component<any, any> {
     this.state = {
       timeRemainingInSeconds: 25 * toSeconds,
       timerMinutes: 25,
-      breakMinutes: null,
+      breakMinutes: 5,
       hasStarted: false,
+      isBreak: false,
     };
 
     this.handleStart = this.handleStart.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handleReset = this.handleReset.bind(this);
+    this.handleSkip = this.handleSkip.bind(this);
   }
 
   handleStart(event: any) {
@@ -61,17 +60,28 @@ export default class Timer extends React.Component<any, any> {
   }
 
   handleChange(event: any) {
-    event.preventDefault(); //? TODO: Is this necessary?
+    event.preventDefault();
     this.setState({
       [event.target.name]: event.target.value,
+    }, () => {
+      if (!this.state.hasStarted) {
+        this.setState({
+          timeRemainingInSeconds: (this.state.isBreak ? this.state.breakMinutes : this.state.timerMinutes) * toSeconds
+        });
+      }
     });
-    if (!this.state.hasStarted && event.target.name === "timerMinutes") {
+  }
+
+  handleSkip(event: any) {
+    event.preventDefault();
+    clearInterval(this.timer);
+    this.setState({
+      isBreak: !this.state.isBreak,
+    }, () => {
       this.setState({
-        [event.target.name]: event.target.value,
-        //TODO: Change this part to account for when break timer is running
-        timeRemainingInSeconds: event.target.value * toSeconds
-      });
-    }
+        timeRemainingInSeconds: this.state.isBreak ? this.state.breakMinutes * toSeconds : this.state.timerMinutes * toSeconds,
+      })
+    });
   }
 
   decrementTimeRemaining = () => {
@@ -83,6 +93,13 @@ export default class Timer extends React.Component<any, any> {
       alert("Timer Completed");
       clearInterval(this.timer);
       //TODO: Switch to break timer
+      this.setState({
+        isBreak: true,
+      }, ()=>{
+        this.setState({
+          timeRemainingInSeconds: (this.state.isBreak ? this.state.breakMinutes : this.state.timerMinutes) * toSeconds,
+        })
+      });
     }
   };
 
@@ -132,6 +149,9 @@ export default class Timer extends React.Component<any, any> {
               </button>
               <button id="stop" onClick={this.handleStop.bind(this)}>
                 Stop
+              </button>
+              <button id="skip" onClick={this.handleSkip.bind(this)}>
+                Skip
               </button>
               <button id="reset" onClick={this.handleReset.bind(this)}>
                 Reset
