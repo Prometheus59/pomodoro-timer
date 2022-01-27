@@ -1,7 +1,7 @@
 # Pomodoro App
 
 In-Progress:
-- [ ] Add break timer functionality
+- [x] Add break timer functionality
 - [ ] Add animation to tomato to indicate when it's done
 - [ ] Style the app
 - [x] Display the time in minutes and seconds
