@@ -30,10 +30,7 @@ export default class Timer extends React.Component<any, any> {
   handleStart(event: any) {
     event.preventDefault();
     if (!this.state.hasStarted) {
-      // this.setState({
-      //   // Default to 25 minute pomodoros
-      //   timeRemainingInSeconds: this.state.timerMinutes * toSeconds
-      // });
+      this.decrementTimeRemaining();
       this.timer = setInterval(() => {
         this.decrementTimeRemaining();
       }, 1000);
@@ -42,6 +39,7 @@ export default class Timer extends React.Component<any, any> {
       });
     } else {
       clearInterval(this.timer);
+      // this.decrementTimeRemaining(); //? Should timer continue immediately after re-starting?
       this.timer = setInterval(() => {
         this.decrementTimeRemaining();
       }, 1000);
